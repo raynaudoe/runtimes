@@ -1,0 +1,17 @@
+name: Trigger Workflow
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  trigger-repo-b:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger repository_dispatch
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.TEST_SECRET }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/zondax/paseo-runtime-test/dispatches \
+            -d '{"event_type":"repo-a-pr-created","client_payload":{"repository":"${{ github.repository }}","pr_number":"${{ github.event.pull_request.number }}","pr_title":"${{ github.event.pull_request.title }}"}}'
